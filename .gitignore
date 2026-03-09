@@ -1,0 +1,45 @@
+# Binaries
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Visual Studio
+.vs/
+
+# NuGet packages
+packages/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Rider IDE
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build results
+*.dll
+*.exe
+*.pdb
+
+# Test results
+TestResults/
+
+# Coverage reports
+*.coverage
+*.coveragexml
+
+# Database files
+*.db
+*.sqlite
+
+# Environment variables
+.env
