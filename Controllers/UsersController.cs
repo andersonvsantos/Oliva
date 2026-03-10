@@ -36,7 +36,7 @@ namespace Oliva.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
         {
             if (!ModelState.IsValid)
             {
@@ -56,11 +56,11 @@ namespace Oliva.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User updateData)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
         {
             try
             {
-                await _userService.UpdateUserAsync(id, updateData);
+                await _userService.UpdateUserAsync(id, userDto);
                 return NoContent(); 
             }
             catch (Exception erro)

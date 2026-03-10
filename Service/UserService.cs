@@ -28,7 +28,7 @@ namespace Oliva.Services
             return await _databaseContext.Users.FirstOrDefaultAsync(user => user.Email == email);
         }
 
-        public async Task<User> CreateNewUserAsync(UserDto userDto)
+        public async Task<User> CreateNewUserAsync(CreateUserDto userDto)
         {
             var existingUser = await GetUserByEmailAsync(userDto.Email);
             
@@ -50,7 +50,7 @@ namespace Oliva.Services
             return newUser;
         }
 
-        public async Task UpdateUserAsync(int userId, User updateData)
+        public async Task UpdateUserAsync(int userId, UpdateUserDto updateData)
         {
             var userDb = await _databaseContext.Users.FindAsync(userId);
             
