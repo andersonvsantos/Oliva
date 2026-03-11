@@ -2,16 +2,21 @@ using Microsoft.EntityFrameworkCore;
 using Oliva.Data;
 using Oliva.Models;
 using Oliva.Models.Dtos.Auth;
+using Oliva.Service;
 
 namespace Oliva.Service
 {
     public class AuthService
     {
         private readonly AppDbContext _databaseContext;
+        private readonly IConfiguration _configuration;
+        private readonly TokenService _tokenService;
 
-        public AuthService(AppDbContext databaseContext)
+        public AuthService(AppDbContext databaseContext, IConfiguration configuration, TokenService tokenService)
         {
             _databaseContext = databaseContext;
+            _configuration = configuration;
+            _tokenService = tokenService;
         }
 
         public async Task<object> AuthenticateAsync(LoginDto loginDto)
@@ -24,16 +29,16 @@ namespace Oliva.Service
                 throw new Exception("Invalid email or password.");
             }
 
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash);
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDto.Password + _configuration["Security:PasswordPepper"], user.PasswordHash);
 
             if (!isPasswordValid)
             {
                 throw new Exception("Invalid email or password.");
             }
 
-            //Implementar JWT
+            var token = _tokenService.Generate(user);
 
-            return user;
+            return new { Token = token, User = new { user.Name, user.Email, user.Role } };
         }
     }
 }

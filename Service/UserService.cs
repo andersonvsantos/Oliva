@@ -7,10 +7,12 @@ namespace Oliva.Services
     public class UserService
     {
         private readonly AppDbContext _databaseContext;
+        private readonly IConfiguration _configuration;
 
-        public UserService(AppDbContext databaseContext)
+        public UserService(AppDbContext databaseContext, IConfiguration configuration)
         {
             _databaseContext = databaseContext;
+            _configuration = configuration;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
@@ -41,7 +43,8 @@ namespace Oliva.Services
             {
                 Name = userDto.Name,
                 Email = userDto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password + _configuration["Security:PasswordPepper"]),
+                Role = "User"
             };
 
             _databaseContext.Users.Add(newUser);
