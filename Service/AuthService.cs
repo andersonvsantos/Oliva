@@ -40,5 +40,22 @@ namespace Oliva.Service
 
             return new { Token = token, User = new { user.Name, user.Email, user.Role } };
         }
+
+        public async Task ResetPasswordAsync(ResetPasswordDto resetDto)
+        {
+            var userDb = await _databaseContext.Users
+                .FirstOrDefaultAsync(u => u.Email == resetDto.Email);
+
+            if (userDb == null || !BCrypt.Net.BCrypt.Verify(resetDto.OldPassword + _configuration["Security:PasswordPepper"], userDb.PasswordHash))
+            {
+                throw new Exception("Invalid email or password.");
+            }
+
+            string newHash = BCrypt.Net.BCrypt.HashPassword(resetDto.NewPassword + _configuration["Security:PasswordPepper"]);
+
+            userDb.PasswordHash = newHash;
+
+            await _databaseContext.SaveChangesAsync();
+        }
     }
 }

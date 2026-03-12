@@ -28,5 +28,18 @@ namespace Oliva.Controllers
                 return Unauthorized(new { message = ex.Message });
             }
         }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resertDto)
+        {
+            try
+            {
+                await _authService.ResetPasswordAsync(resertDto);
+                return Ok(new { message = "Password updated!" });
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+        }
     }
 }
