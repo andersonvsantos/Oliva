@@ -18,21 +18,21 @@ namespace Oliva.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
-            var usersList = await _userService.GetAllAsync();
+            var usersList = await _userService.GetAllUsersAsync();
             return Ok(usersList);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            var foundUser = await _userService.GetUserByIdAsync(id);
+            var dbUser = await _userService.GetUserByIdAsync(id);
 
-            if (foundUser == null)
+            if (dbUser == null)
             {
                 return NotFound("User not found.");
             }
 
-            return Ok(foundUser);
+            return Ok(dbUser);
         }
 
         [HttpPost]
@@ -49,9 +49,9 @@ namespace Oliva.Controllers
                 
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
-            catch (Exception erro)
+            catch (Exception error)
             {
-                return BadRequest(erro.Message);
+                return BadRequest(error.Message);
             }
         }
 
@@ -63,9 +63,9 @@ namespace Oliva.Controllers
                 await _userService.UpdateUserAsync(id, userDto);
                 return NoContent(); 
             }
-            catch (Exception erro)
+            catch (Exception error)
             {
-                return NotFound(erro.Message);
+                return NotFound(error.Message);
             }
         }
 
@@ -77,9 +77,9 @@ namespace Oliva.Controllers
                 await _userService.DeleteUserAsync(id);
                 return Ok("User deleted with success.");
             }
-            catch (Exception erro)
+            catch (Exception error)
             {
-                return NotFound(erro.Message);
+                return NotFound(error.Message);
             }
         }
     }

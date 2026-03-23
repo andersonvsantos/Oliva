@@ -15,7 +15,7 @@ namespace Oliva.Services
             _configuration = configuration;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _databaseContext.Users.ToListAsync();
         }
@@ -32,9 +32,9 @@ namespace Oliva.Services
 
         public async Task<User> CreateNewUserAsync(CreateUserDto userDto)
         {
-            var existingUser = await GetUserByEmailAsync(userDto.Email);
+            var userDb = await GetUserByEmailAsync(userDto.Email);
             
-            if (existingUser != null) 
+            if (userDb != null) 
             {
                 throw new Exception("There is already a created user with this email.");
             }

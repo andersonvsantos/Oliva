@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Oliva.Models.Entities.Product;
 
 namespace Oliva.Models
 {
@@ -13,6 +14,7 @@ namespace Oliva.Models
         public decimal Price { get; set; }
         [MaxLength(500)]
         public string? Description { get; set; }
+        public List<ProductCategory> Categories { get; set; } = new();
         public List<ProductImage> Images { get; set; } = new();
     }
 }
