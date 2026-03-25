@@ -14,7 +14,10 @@ namespace Oliva.Models
         public decimal Price { get; set; }
         [MaxLength(500)]
         public string? Description { get; set; }
+        [Required(ErrorMessage = "Color is required!")]
+        [MaxLength(150)]
+        public List<string> Color { get; set; } = new();
         public List<ProductCategory> Categories { get; set; } = new();
-        public List<ProductImage> Images { get; set; } = new();
+        public List<string> Images { get; set; } = new();
     }
 }

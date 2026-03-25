@@ -30,7 +30,7 @@ namespace Oliva.Service
                 .FirstOrDefaultAsync(productCategory => productCategory.Name == categoryName);
         }
 
-        public async Task<ProductCategory> CreateNewProductCategory(ProductCategoryDto categoryDto)
+        public async Task<ProductCategory> CreateNewProductCategoryAsync(ProductCategoryDto categoryDto)
         {
             var categoryDb = await GetProductCategoryByName(categoryDto.Name);
             ProductCategory? parent = null;

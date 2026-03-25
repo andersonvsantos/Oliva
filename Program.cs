@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ProductCategoryService>();
-builder.Services.AddScoped<ProductImageService>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddTransient<TokenService>();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");

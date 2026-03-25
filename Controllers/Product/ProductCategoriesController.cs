@@ -45,7 +45,7 @@ namespace Oliva.Controllers
 
             try
             {
-                var createdCategory = await _categoryService.CreateNewProductCategory(categoryDto);
+                var createdCategory = await _categoryService.CreateNewProductCategoryAsync(categoryDto);
 
                 return CreatedAtAction(nameof(GetProductCategoryById), new { id = createdCategory.Id }, createdCategory);
             }

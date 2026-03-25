@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Oliva.Data;
+using Oliva.Models.Dtos.Product;
+using Oliva.Service;
 
 namespace Oliva.Controllers
 {
@@ -7,10 +9,41 @@ namespace Oliva.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
-        public ProductsController(AppDbContext appDbContext)
+        private readonly ProductService _productService;
+
+        public ProductsController(ProductService productService)
         {
-            _appDbContext = appDbContext;
+            _productService = productService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var products = await _productService.GetAllProducts();
+            return Ok(products);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
+        {
+            var product = await _productService.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDto productDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var product = await _productService.CreateNewProductAsync(productDto);
+            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
     }
 }
