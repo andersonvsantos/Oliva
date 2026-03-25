@@ -10,24 +10,28 @@ namespace Oliva.Data
 
         public DbSet<User> Users {get; set;}
         public DbSet<Product> Products {get; set;}
+        public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductCategory> ProductCategories {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure many-to-many relationship between Product and ProductCategory
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.Categories)
+                .HasMany(product => product.Categories)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("ProductProductCategories"));
+                .UsingEntity(joinTable => joinTable.ToTable("ProductProductCategories"));
 
-            // Configure self-referencing relationship for ProductCategory
             modelBuilder.Entity<ProductCategory>()
-                .HasOne(pc => pc.Parent)
+                .HasOne(productCategory => productCategory.Parent)
                 .WithMany()
-                .HasForeignKey(pc => pc.ParentId)
-                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+                .HasForeignKey(productCategory => productCategory.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasMany(product => product.Variants)
+                .WithOne(variant => variant.Product)
+                .HasForeignKey(variant => variant.ProductId);
         }
     }
 }

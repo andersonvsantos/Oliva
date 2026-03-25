@@ -45,5 +45,33 @@ namespace Oliva.Controllers
             var product = await _productService.CreateNewProductAsync(productDto);
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDto productDto)
+        {
+            try
+            {
+                await _productService.UpdateProductAsync(id, productDto);
+                return Ok("Product updated with success.");
+            }
+            catch (Exception error)
+            {
+                return NotFound(error.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                await _productService.DeleteProductAsync(id);
+                return Ok("Product deleted with success.");
+            }
+            catch (Exception error)
+            {
+                return NotFound(error.Message);
+            }
+        }
     }
 }

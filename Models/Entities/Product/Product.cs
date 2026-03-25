@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Oliva.Models.Entities.Product;
 
-namespace Oliva.Models
+namespace Oliva.Models.Entities.Product
 {
     public class Product
     {
@@ -14,9 +13,9 @@ namespace Oliva.Models
         public decimal Price { get; set; }
         [MaxLength(500)]
         public string? Description { get; set; }
-        [Required(ErrorMessage = "Color is required!")]
+        [Required(ErrorMessage = "Variants is required!")]
         [MaxLength(150)]
-        public List<string> Color { get; set; } = new();
+        public List<ProductVariant> Variants { get; set; } = new();
         public List<ProductCategory> Categories { get; set; } = new();
         public List<string> Images { get; set; } = new();
     }

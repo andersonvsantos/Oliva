@@ -61,7 +61,7 @@ namespace Oliva.Controllers
             try
             {
                 await _userService.UpdateUserAsync(id, userDto);
-                return NoContent(); 
+                return Ok("User updated with success.");
             }
             catch (Exception error)
             {

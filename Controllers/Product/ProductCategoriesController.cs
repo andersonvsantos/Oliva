@@ -61,7 +61,7 @@ namespace Oliva.Controllers
             try
             {
                 await _categoryService.UpdateProductCategoryAsync(id, categoryDto);
-                return NoContent(); 
+                return Ok("Category updated with success."); 
             }
             catch (Exception error)
             {
