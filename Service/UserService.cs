@@ -20,9 +20,9 @@ namespace Oliva.Services
             return await _databaseContext.Users.ToListAsync();
         }
 
-        public async Task<User?> GetUserByIdAsync(int userId)
+        public async Task<User?> GetUserByUUIDAsync(string UUID)
         {
-            return await _databaseContext.Users.FindAsync(userId);
+            return await _databaseContext.Users.FirstOrDefaultAsync(user => user.UUID == UUID);
         }
 
         public async Task<User?> GetUserByEmailAsync(string email)
@@ -44,7 +44,8 @@ namespace Oliva.Services
                 Name = userDto.Name,
                 Email = userDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password + _configuration["Security:PasswordPepper"]),
-                Role = "User"
+                Role = "User",
+                UUID =  Guid.NewGuid().ToString()
             };
 
             _databaseContext.Users.Add(newUser);
@@ -53,9 +54,9 @@ namespace Oliva.Services
             return newUser;
         }
 
-        public async Task UpdateUserAsync(int userId, UpdateUserDto updateData)
+        public async Task UpdateUserAsync(string UUID, UpdateUserDto updateData)
         {
-            var userDb = await _databaseContext.Users.FindAsync(userId);
+            var userDb = await _databaseContext.Users.FirstOrDefaultAsync(user => user.UUID == UUID);
             
             if (userDb == null) 
             {
@@ -66,9 +67,9 @@ namespace Oliva.Services
             await _databaseContext.SaveChangesAsync();
         }
 
-        public async Task DeleteUserAsync(int userId)
+        public async Task DeleteUserAsync(string UUID)
         {
-            var userDb = await _databaseContext.Users.FindAsync(userId);
+            var userDb = await _databaseContext.Users.FirstOrDefaultAsync(user => user.UUID == UUID);
             
             if (userDb == null) 
             {

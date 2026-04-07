@@ -22,10 +22,10 @@ namespace Oliva.Controllers
             return Ok(usersList);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        [HttpGet("{UUID}")]
+        public async Task<IActionResult> GetUserByUUID(string UUID)
         {
-            var dbUser = await _userService.GetUserByIdAsync(id);
+            var dbUser = await _userService.GetUserByUUIDAsync(UUID);
 
             if (dbUser == null)
             {
@@ -47,7 +47,7 @@ namespace Oliva.Controllers
             {
                 var createdUser = await _userService.CreateNewUserAsync(userDto);
                 
-                return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+                return CreatedAtAction(nameof(GetUserByUUID), new { UUID = createdUser.UUID }, createdUser);
             }
             catch (Exception error)
             {
@@ -55,12 +55,12 @@ namespace Oliva.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
+        [HttpPut("{UUID}")]
+        public async Task<IActionResult> UpdateUser(string UUID, [FromBody] UpdateUserDto userDto)
         {
             try
             {
-                await _userService.UpdateUserAsync(id, userDto);
+                await _userService.UpdateUserAsync(UUID, userDto);
                 return Ok("User updated with success.");
             }
             catch (Exception error)
@@ -69,12 +69,12 @@ namespace Oliva.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete("{UUID}")]
+        public async Task<IActionResult> DeleteUser(string UUID)
         {
             try
             {
-                await _userService.DeleteUserAsync(id);
+                await _userService.DeleteUserAsync(UUID);
                 return Ok("User deleted with success.");
             }
             catch (Exception error)

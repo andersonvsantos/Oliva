@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Oliva.Models;
+using Oliva.Models.Entities.Cart;
 using Oliva.Models.Entities.Product;
 
 namespace Oliva.Data
@@ -12,6 +13,7 @@ namespace Oliva.Data
         public DbSet<Product> Products {get; set;}
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<ProductCategory> ProductCategories {get; set;}
+        public DbSet<Cart> Cart {get; set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,12 @@ namespace Oliva.Data
                 .HasMany(product => product.Variants)
                 .WithOne(variant => variant.Product)
                 .HasForeignKey(variant => variant.ProductId);
+
+            modelBuilder.Entity<Cart>()
+                .OwnsMany(cart => cart.Items, builder =>
+                {
+                    builder.ToJson();
+                });
         }
     }
 }

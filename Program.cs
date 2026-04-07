@@ -15,6 +15,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ProductCategoryService>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddTransient<TokenService>();
 
 var connectionString = builder.Configuration.GetConnectionString("AppDbConnectionString");

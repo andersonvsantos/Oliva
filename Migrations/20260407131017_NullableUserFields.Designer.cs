@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Oliva.Data;
@@ -12,9 +13,11 @@ using Oliva.Data;
 namespace Oliva.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407131017_NullableUserFields")]
+    partial class NullableUserFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,20 +25,6 @@ namespace Oliva.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Oliva.Models.Entities.Cart.Cart", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserUUID")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cart");
-                });
 
             modelBuilder.Entity("Oliva.Models.Entities.Product.Product", b =>
                 {
@@ -182,39 +171,6 @@ namespace Oliva.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductProductCategories", (string)null);
-                });
-
-            modelBuilder.Entity("Oliva.Models.Entities.Cart.Cart", b =>
-                {
-                    b.OwnsMany("Oliva.Models.Entities.Cart.CartItem", "Items", b1 =>
-                        {
-                            b1.Property<string>("CartId");
-
-                            b1.Property<int>("__synthesizedOrdinal")
-                                .ValueGeneratedOnAdd();
-
-                            b1.Property<int>("ProductId");
-
-                            b1.Property<string>("ProductName")
-                                .IsRequired();
-
-                            b1.Property<decimal>("ProductPrice");
-
-                            b1.Property<int>("Quantity");
-
-                            b1.HasKey("CartId", "__synthesizedOrdinal");
-
-                            b1.ToTable("Cart");
-
-                            b1
-                                .ToJson("Items")
-                                .HasColumnType("jsonb");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CartId");
-                        });
-
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Oliva.Models.Entities.Product.ProductCategory", b =>
