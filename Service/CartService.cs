@@ -41,18 +41,24 @@ namespace Oliva.Service
             {
                 foreach(var cartItem in cartDto.CartItens)
                 {
-                    var product = await _productService.GetProductById(cartItem.ProductId);
-                    if (product == null)
+                    var variant = await _productService.GetProductVariantById(cartItem.VariantId);
+                    if (variant == null)
                     {
-                        throw new Exception($"Product with id {cartItem.ProductId} not found.");
+                        throw new Exception($"Variant with id {cartItem.VariantId} not found.");
+                    }
+
+                    if (cartItem.Quantity > variant.Stock)
+                    {
+                        throw new Exception($"Not enough stock for variant {variant.Name}. Available: {variant.Stock}");
                     }
 
                     var newCartItem = new CartItem
                     {
-                        ProductId = product.Id,
-                        ProductName = product.Name,
-                        ProductPrice = product.Price,
-                        Quantity = cartItem.Quantity
+                        VariantId = variant.Id,
+                        VariantName = variant.Name,
+                        ProductPrice = variant.Product.Price,
+                        Quantity = cartItem.Quantity,
+                        Stock = variant.Stock
                     };
 
                     cart.Items.Add(newCartItem);
@@ -73,27 +79,36 @@ namespace Oliva.Service
                 throw new Exception("There isn't a created cart for this user.");
             }
 
-            var product = await _productService.GetProductById(cartItemDto.ProductId);
+            var variant = await _productService.GetProductVariantById(cartItemDto.VariantId);
 
-            if (product == null)
+            if (variant == null)
             {
-                throw new Exception("Product not found.");
+                throw new Exception("Variant not found.");
             }
 
-            var existingItem = cartDb.Items.FirstOrDefault(item => item.ProductId == product.Id);
+            var existingItem = cartDb.Items.FirstOrDefault(item => item.VariantId == variant.Id);
 
             if (existingItem != null)
             {
+                if (existingItem.Quantity + cartItemDto.Quantity > variant.Stock)
+                {
+                    throw new Exception($"Not enough stock for variant {variant.Name}. Available: {variant.Stock}");
+                }
                 existingItem.Quantity += cartItemDto.Quantity;
             }
             else
             {
+                if (cartItemDto.Quantity > variant.Stock)
+                {
+                    throw new Exception($"Not enough stock for variant {variant.Name}. Available: {variant.Stock}");
+                }
                 var newCartItem = new CartItem
                 {
-                    ProductId = product.Id,
-                    ProductName = product.Name,
-                    ProductPrice = product.Price,
-                    Quantity = cartItemDto.Quantity
+                    VariantId = variant.Id,
+                    VariantName = variant.Name,
+                    ProductPrice = variant.Product.Price,
+                    Quantity = cartItemDto.Quantity,
+                    Stock = variant.Stock
                 };
                 cartDb.Items.Add(newCartItem);
             }
@@ -112,14 +127,14 @@ namespace Oliva.Service
                 throw new Exception("There isn't a created cart for this user.");
             }
 
-            var product = await _productService.GetProductById(cartItemDto.ProductId);
+            var variant = await _productService.GetProductVariantById(cartItemDto.VariantId);
 
-            if (product == null)
+            if (variant == null)
             {
-                throw new Exception("Product not found.");
+                throw new Exception("Variant not found.");
             }
 
-            var existingItem = cartDb.Items.FirstOrDefault(item => item.ProductId == product.Id);
+            var existingItem = cartDb.Items.FirstOrDefault(item => item.VariantId == variant.Id);
 
             if (existingItem != null)
             {

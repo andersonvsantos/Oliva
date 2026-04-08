@@ -21,6 +21,7 @@ namespace Oliva.Service
         {
             return await _databaseContext.Products
                 .Include(product => product.Categories)
+                .Include(product => product.Variants)
                 .ToListAsync();
         }
 
@@ -28,6 +29,7 @@ namespace Oliva.Service
         {
             return await _databaseContext.Products
                 .Include(product => product.Categories)
+                .Include(product => product.Variants)
                 .FirstOrDefaultAsync(product => product.Id == productId);
         }
 
@@ -77,6 +79,7 @@ namespace Oliva.Service
         {
             var productDb = await _databaseContext.Products
                 .Include(product => product.Categories)
+                .Include(product => product.Variants)
                 .FirstOrDefaultAsync(product => product.Id == productId);
 
             if (productDb == null)
@@ -84,14 +87,12 @@ namespace Oliva.Service
                 throw new Exception("Product not found for update.");
             }
 
-            var updatedProduct = new Product
-            {
-                Name = productDto.Name,
-                Price = productDto.Price,
-                Description = productDto.Description,
-                Images = productDto.Images?.ToList() ?? new List<string>()
-            };
+            productDb.Name = productDto.Name;
+            productDb.Price = productDto.Price;
+            productDb.Description = productDto.Description;
+            productDb.Images = productDto.Images?.ToList() ?? new List<string>();
 
+            productDb.Variants.Clear();
             if (productDto.Variants != null)
             {
                 foreach (var variantDto in productDto.Variants)
@@ -101,11 +102,11 @@ namespace Oliva.Service
                         Name = variantDto.Name,
                         Stock = variantDto.Stock
                     };
-
-                    updatedProduct.Variants.Add(variant);
+                    productDb.Variants.Add(variant);
                 }
             }
 
+            productDb.Categories.Clear();
             if (productDto.Categories != null)
             {
                 foreach (var categoryName in productDto.Categories)
@@ -113,12 +114,11 @@ namespace Oliva.Service
                     var category = await _productCategoryService.GetProductCategoryByName(categoryName);
                     if (category != null)
                     {
-                        updatedProduct.Categories.Add(category);
+                        productDb.Categories.Add(category);
                     }
                 }
             }
 
-            _databaseContext.Entry(productDb).CurrentValues.SetValues(updatedProduct);
             await _databaseContext.SaveChangesAsync();
         }
 
@@ -135,6 +135,13 @@ namespace Oliva.Service
 
             _databaseContext.Products.Remove(productDb);
             await _databaseContext.SaveChangesAsync();
+        }
+
+        public async Task<ProductVariant?> GetProductVariantById(int variantId)
+        {
+            return await _databaseContext.ProductVariants
+                .Include(variant => variant.Product)
+                .FirstOrDefaultAsync(variant => variant.Id == variantId);
         }
     }
 }
